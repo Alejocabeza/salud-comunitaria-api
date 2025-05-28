@@ -1,4 +1,4 @@
-from ...models.auth import Auth
+from ..models.auth import Auth
 from pydantic import BaseModel
 from typing import Optional
 

@@ -25,6 +25,7 @@ def create_admin_user(db: Session):
         name="Admin",
         email="admin@example.com",
         password=hashed_password,
+        is_active=True,
     )
     db.add(admin_user)
     db.commit()

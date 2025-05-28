@@ -2,7 +2,7 @@ from typing import List
 from sqlmodel import Session, select
 from ..models.auth import Auth, AuthLogin
 from passlib.context import CryptContext
-from ..resource.auth.login_resource import LoginResource
+from ..resource.login_resource import LoginResource
 from ..utils.jwt import encode_token 
 from ..config.settings import settings
 from fastapi import HTTPException

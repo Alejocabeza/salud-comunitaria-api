@@ -1,7 +1,6 @@
 # main.py
 from fastapi import FastAPI
-from .config.database import create_db_and_tables, engine
-from .routes import auth
+from .routes import auth, outpatient_center
 from .config.settings import settings
 
 app = FastAPI(
@@ -12,3 +11,4 @@ app = FastAPI(
 )
 
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(outpatient_center.router, prefix="/api/v1")

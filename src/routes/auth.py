@@ -5,11 +5,11 @@ from sqlmodel import Session
 from ..services.auth import auth_login
 from ..models.auth import AuthLogin, AuthForgotPassword, AuthResetPassword
 from ..config.database import get_session
-from ..resource.auth.login_resource import LoginResource
+from ..resource.login_resource import LoginResource
 
 router = APIRouter(
     prefix="/auth",
-    tags=["auth"],
+    tags=["Auth"],
     responses={404: {"description": "Not found"}}
 )
 
