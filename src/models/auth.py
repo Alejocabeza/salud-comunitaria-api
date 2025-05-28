@@ -11,6 +11,7 @@ class Auth(SQLModel, table=True):
     password: str = Field(default=None)
     password_reset_token: Optional[str] = Field(default=None, max_length=100, nullable=True)
     email_reset_token: Optional[str] = Field(default=None, max_length=100, nullable=True)
+    is_admin: bool = Field(default=False, nullable=False)
     created_at: Optional[str] = Field(default_factory=lambda: datetime.now().isoformat(), nullable=True)
     updated_at: Optional[str] = Field(default=None, nullable=True)
 

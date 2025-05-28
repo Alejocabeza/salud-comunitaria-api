@@ -1,12 +1,21 @@
 from jose import jwt
 from ..config.settings import settings
+from datetime import datetime, timedelta, timezone
+from fastapi import HTTPException
 
-def create_access_token(payload: dict, expires_delta=settings.ACCESS_TOKEN_EXPIRE_MINUTES):
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+def encode_token(payload: dict, expires_delta=settings.ACCESS_TOKEN_EXPIRE_MINUTES):
+    to_encode = payload.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta or 60)
+    to_encode["exp"] = int(expire.timestamp())
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-def verify_access_token(token: str):
+def decode_token(token: str):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        return True
-    except jwt.JWTError:
-        return None
+        return payload
+    except Exception as e:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido o expirado",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
