@@ -7,7 +7,7 @@ app = FastAPI(
     title=settings.APP_TITLE,
     description=settings.APP_DESCRIPTION,
     version=settings.APP_VERSION,
-    redoc_url='/'
+    doc_url='/'
 )
 
 app.include_router(auth.router, prefix="/api/v1")
