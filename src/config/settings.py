@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings 
+from pydantic_settings import BaseSettings
 
 load_dotenv()
+
 
 class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///./database.db"
@@ -15,8 +16,19 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
+    # SMTP
+    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
+    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
+    MAIL_FROM: str = os.getenv("MAIL_FROM")
+    MAIL_SERVER: str = os.getenv("MAIL_SERVER")
+    MAIL_TLS: bool = os.getenv("MAIL_TLS")
+    MAIL_SSL: bool = os.getenv("MAIL_SSL")
+    USE_CREDENTIALS: bool = os.getenv("USE_CREDENTIALS")
+    VALIDATE_CERTS: bool = os.getenv("VALIDATE_CERTS")
+
     class Config:
         env_file = ".env"
-        env_file_encoding = 'utf-8'
+        env_file_encoding = "utf-8"
+
 
 settings = Settings()
