@@ -12,19 +12,23 @@ class Settings(BaseSettings):
     APP_DESCRIPTION: str = "Aplicación de gestión de salud comunitaria"
     APP_VERSION: str = "1.0.0"
 
-    SECRET_KEY: str = os.getenv("SECRET_KEY")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "default-secret-key")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # SMTP
-    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
-    MAIL_FROM: str = os.getenv("MAIL_FROM")
-    MAIL_SERVER: str = os.getenv("MAIL_SERVER")
-    MAIL_TLS: bool = os.getenv("MAIL_TLS")
-    MAIL_SSL: bool = os.getenv("MAIL_SSL")
-    USE_CREDENTIALS: bool = os.getenv("USE_CREDENTIALS")
-    VALIDATE_CERTS: bool = os.getenv("VALIDATE_CERTS")
+    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME", "")
+    MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD", "")
+    MAIL_PORT: int = int(os.getenv('MAIL_PORT', 587))
+    MAIL_FROM: str = os.getenv("MAIL_FROM", "")
+    MAIL_FROM_NAME: str = os.getenv("MAIL_FROM_NAME", "Salud Comunitaria API")
+    MAIL_SERVER: str = os.getenv("MAIL_SERVER", "")
+    MAIL_STARTTLS: bool = os.getenv("MAIL_STARTTLS", "True").lower() == "true"
+    MAIL_SSL_TLS: bool = os.getenv("MAIL_SSL_TLS", "False").lower() == "true"
+    MAIL_TLS: bool = os.getenv("MAIL_TLS", "True").lower() == "true"
+    MAIL_SSL: bool = os.getenv("MAIL_SSL", "False").lower() == "true"
+    USE_CREDENTIALS: bool = os.getenv("USE_CREDENTIALS", "True").lower() == "true"
+    VALIDATE_CERTS: bool = os.getenv("VALIDATE_CERTS", "True").lower() == "true"
 
     class Config:
         env_file = ".env"

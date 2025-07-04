@@ -18,6 +18,7 @@ class OutpatientCenter(SQLModel, table=True):
 class OutpatientCenterCreate(SQLModel):
     name: str = Field(max_length=100)
     email: str = Field(max_length=100)
+    password: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=15)
     rif: Optional[str] = Field(default=None, max_length=20)
     address: Optional[str] = Field(default=None, max_length=255)
