@@ -9,7 +9,7 @@ from ..resource.login_resource import LoginResource
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Auth"],
+    tags=["Autenticación"],
     responses={404: {"description": "Not found"}}
 )
 

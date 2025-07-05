@@ -9,7 +9,7 @@ from ..models.outpatient_center import OutpatientCenterCreate, OutpatientCenterU
 
 router = APIRouter(
     prefix="/outpatient_center",
-    tags=["Outpatient Center"],
+    tags=["Centro de Atención Ambulatoria"],
     responses={404: {"description": "Not found"}},
     dependencies=[Depends(decode_token)]
 )

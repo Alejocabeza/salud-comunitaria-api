@@ -16,6 +16,7 @@ from src.config.settings import settings # Para obtener DATABASE_URL
 from sqlmodel import SQLModel  # Importa SQLModel desde el paquete correcto
 from src.models.auth import Auth
 from src.models.outpatient_center import OutpatientCenter
+from src.models.doctors import Doctors
 # Importa aquí otros modelos según sea necesario
 
 # Configuración de Alembic, lee la configuración desde alembic.ini
