@@ -17,6 +17,9 @@ from sqlmodel import SQLModel  # Importa SQLModel desde el paquete correcto
 from src.models.auth import Auth
 from src.models.outpatient_center import OutpatientCenter
 from src.models.doctors import Doctors
+from src.models.patient import Patients
+from src.models.role import Roles, UserRole
+from src.models.permission import Permission, UserPermission, RolePermission
 # Importa aquí otros modelos según sea necesario
 
 # Configuración de Alembic, lee la configuración desde alembic.ini

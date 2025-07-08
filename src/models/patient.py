@@ -17,6 +17,7 @@ class Patients(SQLModel, table=True):
 class StorePatientRequest(SQLModel):
     name: str = Field(max_length=100)
     email: str = Field(max_length=100)
+    password: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=15)
     dni: Optional[str] = Field(default=None, max_length=20)
     created_at: Optional[str] = Field(default_factory=lambda: datetime.now().isoformat())

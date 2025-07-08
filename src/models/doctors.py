@@ -18,6 +18,7 @@ class Doctors(SQLModel, table=True):
 class StoreDoctorRequest(SQLModel):
     name: str = Field(max_length=100)
     email: str = Field(max_length=100)
+    password: Optional[str] = Field(default=None, max_length=100)
     phone: Optional[str] = Field(default=None, max_length=15)
     dni: Optional[str] = Field(default=None, max_length=20)
     specialty: Optional[str] = Field(default=None, max_length=100)
