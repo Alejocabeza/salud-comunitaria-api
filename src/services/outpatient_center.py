@@ -2,6 +2,7 @@ from typing import List
 from sqlmodel import Session, select
 from ..models.outpatient_center import OutpatientCenter, OutpatientCenterCreate, OutpatientCenterUpdate
 from ..models.auth import Auth
+from ..models.role import Roles, UserRole
 from ..resource.outpatient_center_resource import ResourceOutpatientCenter
 from passlib.context import CryptContext
 from ..utils.jwt import encode_token 
@@ -37,7 +38,15 @@ def store(db: Session, data: OutpatientCenterCreate):
     db.add(auth)
     db.commit()
     db.refresh(auth)
-    
+
+    outpatient_center_role = db.query(Roles).filter(Roles.name == "outpatient_center").first()
+    if outpatient_center_role:
+        user_role = UserRole(user_id=auth.id, role_id=outpatient_center_role.id)
+        db.add(user_role)
+        db.commit()
+    else:
+        raise Exception("Rol 'outpatient_center' no encontrado")
+
     # Send welcome email with credentials
     try:
         OutpatientCenterEmailService.send_welcome_email(
@@ -74,12 +83,19 @@ def destroy(db: Session, id: int):
     record = db.exec(select(OutpatientCenter).where(OutpatientCenter.id == id)).first()
     if not record:
         return None
-    # Soft delete: marcar la fecha de borrado
+    
+    # Soft delete para OutpatientCenter
     from datetime import datetime
     record.deleted_at = datetime.now().isoformat()
     db.add(record)
-    db.commit()
-    db.refresh(record)
+
+    # Hard delete para Auth
+    auth_record = db.exec(select(Auth).where(Auth.email == record.email)).first()
+    if auth_record:
+        db.delete(auth_record)
+
+    db.commit() # Un solo commit para todas las operaciones
+
     return record
 
 

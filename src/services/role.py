@@ -1,6 +1,6 @@
 from sqlmodel import Session, select
 from ..models.role import Roles, StoreRoleRequest, UpdateRoleRequest 
-from ..models.auth import Auth
+from ..models.permission import Permission, RolePermission
 from ..resource.role_resource import ResourceRole
 from passlib.context import CryptContext
 from fastapi import HTTPException
@@ -21,6 +21,17 @@ def store(db: Session, data: StoreRoleRequest):
     db.add(role)
     db.commit()
     db.refresh(role)
+
+    if data.permissions:
+        for perm_id in data.permissions:
+            permission = db.exec(select(Permission).where(Permission.id == perm_id)).first()
+            if not permission:
+                continue
+            role_permission = RolePermission(role_id=role.id, permission_id=perm_id)
+            db.add(role_permission)
+        db.commit()
+    
+    return ResourceRole.from_array(role)
 
 
 def show(db: Session, id: int):

@@ -21,7 +21,6 @@ def store(db: Session, data: StorePermissionRequest):
     db.commit()
     db.refresh(permission)
 
-
 def show(db: Session, id: int):
     record = db.exec(select(Permission).where(Permission.id == id)).first()
     if not record:

@@ -11,10 +11,13 @@ from seeders.role import seed_data as seed_roles
 from seeders.permission import seed_data as seed_permissions
 from seeders.auth_role import seed_data as seed_auth_roles
 from seeders.role_permission import seed_data as seed_role_permissions
+from seeders.auth import seed_data as seed_auth
 
 def seed_all():
     print("Starting to seed all data...")
     with Session(engine) as session:
+        print('seeding Auths...')
+        seed_auth()
         print("Seeding roles...")
         seed_roles()
         print("Seeding permissions...")

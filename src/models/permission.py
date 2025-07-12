@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Column, ForeignKey
 from datetime import datetime
 
 class Permission(SQLModel, table=True):
@@ -15,14 +15,26 @@ class Permission(SQLModel, table=True):
 class UserPermission(SQLModel, table=True):
     __tablename__ = "users_permissions"
 
-    user_id: int = Field(foreign_key="auths.id", primary_key=True, nullable=False, index=True)
-    permission_id: int = Field(foreign_key="permissions.id", primary_key=True, nullable=False, index=True)
+    user_id: int = Field(
+        default=None,
+        sa_column=Column("user_id", ForeignKey("auths.id", ondelete="CASCADE"), primary_key=True)
+    )
+    permission_id: int = Field(
+        default=None,
+        sa_column=Column("permission_id", ForeignKey("permissions.id", ondelete="CASCADE"), primary_key=True)
+    )
 
 class RolePermission(SQLModel, table=True):
     __tablename__ = "roles_permissions"
 
-    role_id: int = Field(foreign_key="roles.id", nullable=False, index=True, primary_key=True)
-    permission_id: int = Field(foreign_key="permissions.id", nullable=False, index=True, primary_key=True)
+    role_id: int = Field(
+        default=None,
+        sa_column=Column("role_id", ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True)
+    )
+    permission_id: int = Field(
+        default=None,
+        sa_column=Column("permission_id", ForeignKey("permissions.id", ondelete="CASCADE"), primary_key=True)
+    )
 
 class StorePermissionRequest(SQLModel):
     name: str = Field(max_length=100)

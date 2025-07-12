@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from ..models.patient import Patients, StorePatientRequest, UpdatePatientRequest
 from ..models.auth import Auth
+from ..models.role import Roles, UserRole
 from ..resource.patient_resource import ResourcePatient
 from passlib.context import CryptContext
 from fastapi import HTTPException
@@ -34,6 +35,14 @@ def store(db: Session, data: StorePatientRequest):
     db.add(auth)
     db.commit()
     db.refresh(auth)
+
+    patient_role = db.query(Roles).filter(Roles.name == "patient").first()
+    if patient_role:
+        user_role = UserRole(user_id=auth.id, role_id=patient_role.id)
+        db.add(user_role)
+        db.commit()
+    else:
+        raise Exception("Rol 'patient' no encontrado")
     
     # Send welcome email with credentials
     try:
@@ -71,10 +80,17 @@ def destroy(db: Session, id: int):
     record = db.exec(select(Patients).where(Patients.id == id)).first()
     if not record:
         return None
-    # Soft delete: marcar la fecha de borrado
+
+    # Soft delete para OutpatientCenter
     from datetime import datetime
     record.deleted_at = datetime.now().isoformat()
     db.add(record)
-    db.commit()
-    db.refresh(record)
+
+    # Hard delete para Auth
+    auth_record = db.exec(select(Auth).where(Auth.email == record.email)).first()
+    if auth_record:
+        db.delete(auth_record)
+
+    db.commit() 
+
     return record
