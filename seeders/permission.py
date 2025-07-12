@@ -52,6 +52,13 @@ def create_roles(db: Session):
         {"name": "permission.update", "description": "Permission to update permission data"},
         {"name": "permission.delete", "description": "Permission to delete permission data"},
         {"name": "permission.read", "description": "Permission to read permission data"},
+
+        # Resource Permission
+        {"name": "resource.all", "description": "Permission to manage all aspects of resource operations"},
+        {"name": "resource.store", "description": "Permission to store resource data"},
+        {"name": "resource.update", "description": "Permission to update resource data"},
+        {"name": "resource.delete", "description": "Permission to delete resource data"},
+        {"name": "resource.read", "description": "Permission to read resource data"},
     ]
 
     for permission in permission_data:
