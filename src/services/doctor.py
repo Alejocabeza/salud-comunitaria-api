@@ -6,7 +6,7 @@ from ..resource.doctor_resource import ResourceDoctor
 from passlib.context import CryptContext
 from fastapi import HTTPException
 from ..utils.password_generator import generate_secure_password
-from ..services.email.doctor_email_service import DoctoreEmailService
+from ..templates.email.notifications.users.doctor_notification import DoctorNotification
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -46,7 +46,7 @@ def store(db: Session, data: StoreDoctorRequest):
 
     # Send welcome email with credentials
     try:
-        DoctoreEmailService.send_welcome_email(
+        DoctorNotification.send_welcome_email(
             email=outpatient_center.email,
             name=outpatient_center.name,
             password=password

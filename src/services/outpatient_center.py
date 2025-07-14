@@ -9,7 +9,7 @@ from ..utils.jwt import encode_token
 from ..config.settings import settings
 from fastapi import HTTPException
 from ..utils.password_generator import generate_secure_password
-from ..services.email.outpatient_center_email_service import OutpatientCenterEmailService
+from ..templates.email.notifications.users.outpatient_center_notification import OutpatientCenterNotification
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -49,7 +49,7 @@ def store(db: Session, data: OutpatientCenterCreate):
 
     # Send welcome email with credentials
     try:
-        OutpatientCenterEmailService.send_welcome_email(
+        OutpatientCenterNotification.send_welcome_email(
             email=outpatient_center.email,
             name=outpatient_center.name,
             password=password

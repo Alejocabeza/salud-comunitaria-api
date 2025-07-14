@@ -5,7 +5,6 @@ from ..resource.role_resource import ResourceRole
 from passlib.context import CryptContext
 from fastapi import HTTPException
 from ..utils.password_generator import generate_secure_password
-from ..services.email.patient_email_service import PatientEmailService
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

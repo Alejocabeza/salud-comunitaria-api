@@ -1,20 +1,20 @@
-from .email_base_service import EmailBaseService
+from ...email_base_service import EmailBaseService
 
-class PatientEmailService:
+class OutpatientCenterNotification:
     """
-    Email service for patient registration
-
-    Handles sending welcome emails with credentials to newly registered patient
+    Email service for outpatient center registration
+    
+    Handles sending welcome emails with credentials to newly registered outpatient centers
     """
     
     @staticmethod
     def send_welcome_email(email: str, name: str, password: str) -> dict:
         """
-        Send welcome email with credentials to patient
-
+        Send welcome email with credentials to outpatient center
+        
         Args:
             email (str): Recipient email address
-            name (str): Patient name
+            name (str): Outpatient center name
             password (str): Generated password for the account
             
         Returns:
@@ -27,7 +27,7 @@ class PatientEmailService:
         <body>
             <h2>¡Bienvenido a Salud Comunitaria API!</h2>
             <p>Hola <strong>{name}</strong>,</p>
-            <p>Tu cuenta de paciente ha sido registrada exitosamente en nuestro sistema.</p>
+            <p>Tu centro ambulatorio ha sido registrado exitosamente en nuestro sistema.</p>
             <p>Aquí están tus credenciales de acceso:</p>
             <ul>
                 <li><strong>Email:</strong> {email}</li>
