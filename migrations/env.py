@@ -20,6 +20,7 @@ from src.models.doctor import Doctor
 from src.models.patient import Patient
 from src.models.medical_resource import MedicalResource
 from src.models.medication_request import MedicationRequest
+from src.models.external_document import ExternalDocument
 # Importa aquí otros modelos según sea necesario
 
 # Configuración de Alembic, lee la configuración desde alembic.ini
