@@ -8,7 +8,7 @@ from ..core.dependencies import get_current_user
 from ..models.external_document import ExternalDocument
 from ..schemas.external_document import ExternalDocumentCreate, ExternalDocumentRead
 from ..utils.action.base64_action import allowed_file
-from ..core.settings import ALLOWED_EXTENSIONS, MAX_FILE_SIZE_MB, MAX_FILE_SIZE_BYTES
+from ..core.settings import settings
 from datetime import datetime
 
 router = APIRouter(
@@ -31,7 +31,7 @@ def upload_external_document(
     if not allowed_file(doc.filename):
         raise HTTPException(
             status_code=400,
-            detail=f"Tipo de archivo no permitido. Solo se permiten: {', '.join(ALLOWED_EXTENSIONS)}"
+            detail=f"Tipo de archivo no permitido. Solo se permiten: {', '.join(settings.ALLOWED_EXTENSIONS)}"
         )
 
     # Decodificar el archivo base64
@@ -41,10 +41,10 @@ def upload_external_document(
         raise HTTPException(status_code=400, detail="Archivo base64 inválido")
 
     # Validar tamaño
-    if len(file_bytes) > MAX_FILE_SIZE_BYTES:
+    if len(file_bytes) > settings.MAX_FILE_SIZE_BYTES:
         raise HTTPException(
             status_code=400,
-            detail=f"El archivo excede el tamaño máximo permitido de {MAX_FILE_SIZE_MB} MB"
+            detail=f"El archivo excede el tamaño máximo permitido de {settings.MAX_FILE_SIZE_MB} MB"
         )
 
     # Guardar archivo en disco

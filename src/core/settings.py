@@ -30,9 +30,9 @@ class Settings(BaseSettings):
     USE_CREDENTIALS: bool = os.getenv("USE_CREDENTIALS", "True").lower() == "true"
     VALIDATE_CERTS: bool = os.getenv("VALIDATE_CERTS", "True").lower() == "true"
 
-    ALLOWED_EXTENSIONS: list[str] = os.getenv("ALLOWED_EXTENSIONS", "jpg,jpeg,png,pdf").split(",")
+    ALLOWED_EXTENSIONS: list[str] = {"pdf", "jpg", "png", "docx", "txt", "jpeg"}
     MAX_FILE_SIZE_MB: int = int(os.getenv("MAX_FILE_SIZE_MB", 5))
-    MAX_FILE_SIZE_BYTES: int = MAX_FILE_SIZE_MB * 1024 * 102
+    MAX_FILE_SIZE_BYTES: int = MAX_FILE_SIZE_MB * 1024 * 1024
 
     class Config:
         env_file = ".env"
