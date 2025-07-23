@@ -1,6 +1,6 @@
 # main.py
 from fastapi import FastAPI
-from .routes import user, auth, role, user_roles, permission, role_permissions, outpatient_center, doctor, patient
+from .routes import user, auth, role, user_roles, permission, role_permissions, outpatient_center, doctor, patient, medical_resource
 from .core.settings import settings
 
 app = FastAPI(
@@ -19,4 +19,5 @@ app.include_router(role_permissions.router, prefix="/api/v1")
 app.include_router(outpatient_center.router, prefix="/api/v1")
 app.include_router(doctor.router, prefix="/api/v1")
 app.include_router(patient.router, prefix="/api/v1")
+app.include_router(medical_resource.router, prefix="/api/v1")
 

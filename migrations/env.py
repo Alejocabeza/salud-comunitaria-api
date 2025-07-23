@@ -18,6 +18,7 @@ from src.models.user import User, Role, UserRoleLink, Permission, RolePermission
 from src.models.outpatient_center import OutpatientCenter
 from src.models.doctor import Doctor
 from src.models.patient import Patient
+from src.models.medical_resource import MedicalResource
 # Importa aquí otros modelos según sea necesario
 
 # Configuración de Alembic, lee la configuración desde alembic.ini
