@@ -7,8 +7,8 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, project_root)
 
 from sqlmodel import Session
-from src.config.database import engine
-from src.models.role import Roles
+from src.core.database import engine
+from src.models.user import Role
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -22,12 +22,12 @@ def create_roles(db: Session):
     ]
 
     for role in roles_data:
-        existing_role = db.query(Roles).filter(Roles.name == role["name"]).first()
+        existing_role = db.query(Role).filter(Role.name == role["name"]).first()
         if existing_role:
             print(f"Role '{role['name']}' already exists.")
             continue
 
-        new_role = Roles(
+        new_role = Role(
             name=role["name"],
             description=role["description"],
         )

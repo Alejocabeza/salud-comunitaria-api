@@ -7,9 +7,8 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from sqlmodel import Session
-from src.config.database import engine
-from src.models.role import Roles, UserRole
-from src.models.auth import Auth
+from src.core.database import engine
+from src.models.user import Role, UserRoleLink as UserRole
 from passlib.context import CryptContext
 
 def create_auth_roles(db: Session):
@@ -19,7 +18,7 @@ def create_auth_roles(db: Session):
 
     for auth_id, roles in auth_roles_data.items():
         for role_name in roles:
-            role = db.query(Roles).filter(Roles.name == role_name).first()
+            role = db.query(Role).filter(Role.name == role_name).first()
             if not role:
                 print(f"Role '{role_name}' does not exist.")
                 continue

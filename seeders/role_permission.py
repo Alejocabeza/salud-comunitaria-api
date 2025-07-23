@@ -7,9 +7,8 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, project_root)
 
 from sqlmodel import Session
-from src.config.database import engine
-from src.models.permission import RolePermission, Permission
-from src.models.role import Roles
+from src.core.database import engine
+from src.models.user import RolePermissionLink as RolePermission, Permission, Role
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -18,12 +17,10 @@ def create_role_permissions(db: Session):
     role_permissions_data = {
         "admin": ["admin"],
         "outpatient_center": ["outpatient_center.store", "outpatient_center.update", "outpatient_center.delete", "outpatient_center.read", 'doctor.store', 'doctor.delete', 'doctor.read', 'patient.read', 'resource.store', 'resource.update', 'resource.delete', 'resource.read'],
-        "doctor": ["doctor.store", "doctor.update", "doctor.delete", "doctor.read", 'patient.store', 'patient.update', 'patient.delete', 'patient.read', 'resource.read'],
-        "patient": ["patient.store", "patient.update", "patient.delete", "patient.read", 'resource.read'],
     }
 
     for role_name, permissions in role_permissions_data.items():
-        role = db.query(Roles).filter(Roles.name == role_name).first()
+        role = db.query(Role).filter(Role.name == role_name).first()
         if not role:
             print(f"Role '{role_name}' does not exist.")
             continue

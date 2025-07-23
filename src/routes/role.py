@@ -1,45 +1,30 @@
-from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session
-from ..utils.jwt import decode_token
-from ..config.database import get_session
-from ..services.role import index, store, show, update, destroy
-from ..resource.role_resource import ResourceRole
-from ..models.role import StoreRoleRequest, UpdateRoleRequest
+from sqlmodel import Session, select
+from ..core.database import get_session
+from ..core.dependencies import require_role
+from ..core.security import decode_access_token
+from ..models.user import Role
+from ..schemas.user import RoleRead, RoleCreate
 
 router = APIRouter(
     prefix="/roles",
     tags=["Roles"],
     responses={404: {"description": "Not found"}},
-    dependencies=[Depends(decode_token)]
+    dependencies=[Depends(decode_access_token)]
 )
 
-@router.get("/", response_model=List[ResourceRole], status_code=status.HTTP_200_OK)
-def index_role(db: Session = Depends(get_session)):
-    return index(db)
+@router.post("/", response_model=RoleRead)
+def create_role(role: RoleCreate, session: Session = Depends(get_session), current_user=Depends(require_role("admin"))):
+    db_role = session.exec(select(Role).where(Role.name == role.name)).first()
+    if db_role:
+        raise HTTPException(status_code=400, detail="Role already exists")
+    new_role = Role(name=role.name, description=role.description)
+    session.add(new_role)
+    session.commit()
+    session.refresh(new_role)
+    return new_role
 
-@router.post("/", response_model=ResourceRole, status_code=status.HTTP_201_CREATED)
-def store_role(data: StoreRoleRequest, db: Session = Depends(get_session)):
-    return store(db, data)
-
-@router.get("/{id}", response_model=ResourceRole, status_code=status.HTTP_200_OK)
-def get_role(id: int, db: Session = Depends(get_session)):
-    result = show(db, id)
-    if not result:
-        raise HTTPException(status_code=404, detail="Rol no encontrado")
-    return result
-
-@router.patch("/{id}", response_model=ResourceRole, status_code=status.HTTP_200_OK)
-def patch_role(id: int, data: UpdateRoleRequest, db: Session = Depends(get_session)):
-    result = update(db, id, data)
-    if not result:
-        raise HTTPException(status_code=404, detail="Rol no encontrado")
-    return result
-
-
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_role(id: int, db: Session = Depends(get_session)):
-    result = destroy(db, id)
-    if not result:
-        raise HTTPException(status_code=404, detail="Rol no encontrado")
-    return {"message": "Rol eliminado correctamente (soft delete)"}
+@router.get("/", response_model=list[RoleRead])
+def list_roles(session: Session = Depends(get_session), current_user=Depends(require_role("admin"))):
+    roles = session.exec(select(Role)).all()
+    return roles
