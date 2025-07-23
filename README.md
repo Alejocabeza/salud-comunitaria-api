@@ -110,4 +110,4 @@ MIT
 
 ---
 
-**Desarrollado por el equipo de Salud
+**Desarrollado por el equipo de Salud Comunitaria**
