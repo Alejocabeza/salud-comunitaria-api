@@ -24,6 +24,13 @@ def create_roles(db: Session):
         {"name": "outpatient_center.update", "description": "Permission to update outpatient center data"},
         {"name": "outpatient_center.delete", "description": "Permission to delete outpatient center data"},
         {"name": "outpatient_center.read", "description": "Permission to read outpatient center data"},
+
+        # Doctor Permission
+        {"name": "doctor.all", "description": "Permission to manage all doctors"},
+        {"name": "doctor.store", "description": "Permission to store doctor data"},
+        {"name": "doctor.update", "description": "Permission to update doctor data"},
+        {"name": "doctor.delete", "description": "Permission to delete doctor data"},
+        {"name": "doctor.read", "description": "Permission to read doctor data"},
     ]
 
     for permission in permission_data:
