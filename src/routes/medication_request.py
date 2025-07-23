@@ -8,7 +8,11 @@ from ..schemas.medication_request import (
 )
 from datetime import datetime
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/medication_request",
+    tags=["Solicitudes de Medicamentos"],
+    responses={404: {"description": "Not found"}},
+)
 
 # CREATE
 @router.post("/", response_model=MedicationRequestRead)
