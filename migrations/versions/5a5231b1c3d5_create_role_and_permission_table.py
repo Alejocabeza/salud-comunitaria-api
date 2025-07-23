@@ -44,9 +44,9 @@ def upgrade() -> None:
     op.create_table('auths_roles',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('role_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['auths.id'], ),
-    sa.PrimaryKeyConstraint('user_id', 'role_id')
+    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], name='fk_auths_roles_role_id'),
+    sa.ForeignKeyConstraint(['user_id'], ['auths.id'], name='fk_auths_roles_user_id'),
+    sa.PrimaryKeyConstraint('user_id', 'role_id', name='pk_auths_roles')
     )
     with op.batch_alter_table('auths_roles', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_auths_roles_role_id'), ['role_id'], unique=False)
@@ -55,9 +55,9 @@ def upgrade() -> None:
     op.create_table('roles_permissions',
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('permission_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['permission_id'], ['permissions.id'], ),
-    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
-    sa.PrimaryKeyConstraint('role_id', 'permission_id')
+    sa.ForeignKeyConstraint(['permission_id'], ['permissions.id'], name='fk_roles_permissions_permission_id'),
+    sa.ForeignKeyConstraint(['role_id'], ['roles.id'], name='fk_roles_permissions_role_id'),
+    sa.PrimaryKeyConstraint('role_id', 'permission_id', name='pk_roles_permissions')
     )
     with op.batch_alter_table('roles_permissions', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_roles_permissions_permission_id'), ['permission_id'], unique=False)
@@ -66,9 +66,9 @@ def upgrade() -> None:
     op.create_table('users_permissions',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('permission_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['permission_id'], ['permissions.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['auths.id'], ),
-    sa.PrimaryKeyConstraint('user_id', 'permission_id')
+    sa.ForeignKeyConstraint(['permission_id'], ['permissions.id'], name='fk_users_permissions_permission_id'),
+    sa.ForeignKeyConstraint(['user_id'], ['auths.id'], name='fk_users_permissions_user_id'),
+    sa.PrimaryKeyConstraint('user_id', 'permission_id', name='pk_users_permissions')
     )
     with op.batch_alter_table('users_permissions', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_users_permissions_permission_id'), ['permission_id'], unique=False)

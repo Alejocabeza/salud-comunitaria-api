@@ -21,6 +21,8 @@ def store(db: Session, data: StoreResourceRequest):
     db.commit()
     db.refresh(resource)
 
+    return ResourceResources.from_array(resource)
+
 def show(db: Session, id: int):
     record = db.exec(select(Resource).where(Resource.id == id)).first()
     if not record:

@@ -21,6 +21,7 @@ from src.models.patient import Patients
 from src.models.role import Roles, UserRole
 from src.models.permission import Permission, UserPermission, RolePermission
 from src.models.resource import Resource
+from src.models.request_medicines import RequestMedicine
 # Importa aquí otros modelos según sea necesario
 
 # Configuración de Alembic, lee la configuración desde alembic.ini
