@@ -1,17 +1,19 @@
 # Salud Comunitaria API
 
-API para la gestión de salud comunitaria, diseñada para administrar pacientes, profesionales, centros ambulatorios, recursos médicos, roles y permisos, entre otros. Construida con **FastAPI**, **SQLModel** y **Alembic**.
+API para la gestión de salud comunitaria, diseñada para administrar pacientes, profesionales, centros ambulatorios, recursos médicos, documentos externos, roles y permisos, entre otros. Construida con **FastAPI**, **SQLModel** y **Alembic**.
 
 ## Características
 
 - **Gestión de usuarios, roles y permisos**: Control de acceso seguro y flexible.
 - **Administración de pacientes y médicos**: Registro, actualización y seguimiento.
-- **Gestión de centros ambulatorios**: Alta, edición y baja de centros.
+- **Gestión de centros ambulatorios**: Alta, edición y baja de centros, con creación y eliminación automática de usuarios asociados.
 - **Recursos y solicitudes médicas**: Control de inventario y solicitudes de medicamentos.
+- **Gestión de documentos externos**: Subida y consulta de archivos asociados a pacientes.
 - **Autenticación JWT**: Inicio de sesión seguro y recuperación de contraseñas.
 - **Notificaciones por email**: Soporte para recuperación de contraseña vía correo electrónico.
 - **Migraciones de base de datos**: Versionado y actualización del esquema con Alembic.
 - **Semillas iniciales**: Scripts para poblar la base de datos con roles, permisos y usuarios.
+- **Pruebas automáticas**: Soporte para pruebas con Pytest.
 
 ## Tecnologías principales
 
@@ -22,21 +24,24 @@ API para la gestión de salud comunitaria, diseñada para administrar pacientes,
 - [Passlib](https://passlib.readthedocs.io/)
 - [python-jose](https://python-jose.readthedocs.io/)
 - [FastAPI-Mail](https://sabuhish.github.io/fastapi-mail/)
+- [Pytest](https://docs.pytest.org/)
 
 ## Estructura del proyecto
 
 ```
 src/
-  core/           # Configuración, seguridad, dependencias
-  models/         # Modelos ORM (SQLModel)
-  routes/         # Endpoints de la API
-  schemas/        # Esquemas Pydantic
-  test/           # Pruebas automáticas
-migrations/       # Migraciones Alembic
-seeders/          # Scripts de carga inicial de datos
-database.db       # Base de datos SQLite (por defecto)
-.env              # Variables de entorno
-requirements.txt  # Dependencias del proyecto
+  core/             # Configuración, seguridad, dependencias, settings, email
+  models/           # Modelos ORM (SQLModel)
+  routes/           # Endpoints de la API (usuarios, roles, permisos, centros, médicos, pacientes, recursos, documentos, etc.)
+  schemas/          # Esquemas Pydantic para validación y serialización
+  test/             # Pruebas automáticas (unitarias y de integración)
+  utils/            # Utilidades y helpers (ej: validación de archivos)
+main.py             # Punto de entrada de la aplicación FastAPI
+migrations/         # Migraciones Alembic
+seeders/            # Scripts de carga inicial de datos
+database.db         # Base de datos SQLite (por defecto)
+.env                # Variables de entorno
+requirements.txt    # Dependencias del proyecto
 ```
 
 ## Instalación
@@ -86,14 +91,19 @@ pytest src/test/
 ## Endpoints principales
 
 - `/api/v1/auth/login` — Autenticación de usuarios
+- `/api/v1/auth/forgot-password` — Recuperación de contraseña
+- `/api/v1/auth/reset-password` — Restablecimiento de contraseña
 - `/api/v1/users/` — Gestión de usuarios
 - `/api/v1/roles/` — Gestión de roles
 - `/api/v1/permissions/` — Gestión de permisos
+- `/api/v1/user_roles/` — Asignación y remoción de roles a usuarios
+- `/api/v1/role_permissions/` — Asignación y remoción de permisos a roles
 - `/api/v1/outpatient_center/` — Centros ambulatorios
 - `/api/v1/doctors/` — Médicos
 - `/api/v1/patients/` — Pacientes
 - `/api/v1/medical_resource/` — Recursos médicos
 - `/api/v1/medication_request/` — Solicitudes de medicamentos
+- `/api/v1/external_document/` — Documentos externos de pacientes
 
 Consulta la documentación Swagger para ver todos los endpoints y sus detalles.
 
