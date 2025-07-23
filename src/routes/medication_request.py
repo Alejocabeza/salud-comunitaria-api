@@ -78,7 +78,7 @@ def get_medication_request(
     return req
 
 # UPDATE (solo el ambulatorio puede cambiar el estado)
-@router.put("/{request_id}", response_model=MedicationRequestRead)
+@router.patch("/{request_id}", response_model=MedicationRequestRead)
 def update_medication_request(
     request_id: int,
     update: MedicationRequestUpdate,
