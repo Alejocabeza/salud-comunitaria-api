@@ -3,7 +3,9 @@ from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import require_role
 from ..models.patient import Patient
-from ..models.user import User, Role, UserRoleLink
+from ..models.user import User
+from ..models.role import Role
+from ..models.user_role import UserRole
 from ..schemas.patient import (
     PatientCreate, PatientRead, PatientUserRead, PatientUpdate, PatientReadResource
 )
@@ -46,7 +48,7 @@ def create_patient(
     session.commit()
     session.refresh(user)
 
-    user_role_link = UserRoleLink(user_id=user.id, role_id=role.id)
+    user_role = UserRole(user_id=user.id, role_id=role.id)
     session.add(user_role_link)
     session.commit()
 

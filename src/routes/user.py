@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from ..core.database import get_session
-from ..models.user import User, Role
+from ..models.user import User
 from ..schemas.user import UserCreate, UserRead
 from ..core.security import decode_access_token
 from ..core.dependencies import get_current_user, require_role

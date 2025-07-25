@@ -3,7 +3,9 @@ from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import require_role
 from ..models.outpatient_center import OutpatientCenter
-from ..models.user import Role, User, UserRoleLink
+from ..models.user import User
+from ..models.role import Role
+from ..models.user_role import UserRole
 from ..core.security import get_password_hash, generate_secure_password
 from ..schemas.outpatient_center import (
     OutpatientCenterCreate,
@@ -45,7 +47,7 @@ def create_centro_ambulatorio(
     session.commit()
     session.refresh(user)
 
-    user_role_link = UserRoleLink(user_id=user.id, role_id=role.id)
+    user_role_link = UserRole(user_id=user.id, role_id=role.id)
     session.add(user_role_link)
     session.commit()
 

@@ -15,6 +15,17 @@ from .routes import (
     external_document
 )
 from .core.settings import settings
+from .models.user import User
+from .models.patient import Patient
+from .models.doctor import Doctor
+from .models.medication_request import MedicationRequest
+from .models.medical_resource import MedicalResource
+from .models.outpatient_center import OutpatientCenter
+from .models.external_document import ExternalDocument
+from .models.role import Role
+from .models.permission import Permission
+from .models.user_role import UserRole
+from .models.role_permission import RolePermission
 
 app = FastAPI(
     title=settings.APP_TITLE,

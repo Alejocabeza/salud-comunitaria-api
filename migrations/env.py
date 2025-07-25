@@ -5,6 +5,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+from sqlalchemy.engine import Connection
 from alembic import context
 
 # Esto es necesario para que Alembic pueda importar módulos de tu aplicación
@@ -14,7 +15,11 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), '..'
 # Importa tus settings y modelos
 from src.core.settings import settings # Para obtener DATABASE_URL
 from sqlmodel import SQLModel  # Importa SQLModel desde el paquete correcto
-from src.models.user import User, Role, UserRoleLink, Permission, RolePermissionLink
+from src.models.user import User
+from src.models.role import Role
+from src.models.permission import Permission
+from src.models.user_role import UserRole
+from src.models.role_permission import RolePermission
 from src.models.outpatient_center import OutpatientCenter
 from src.models.doctor import Doctor
 from src.models.patient import Patient
@@ -33,7 +38,8 @@ if config.config_file_name is not None:
 
 # Establece la URL de la base de datos desde tus settings
 # Esto sobreescribe cualquier valor de sqlalchemy.url en alembic.ini
-config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
+url = os.environ.get("DATABASE_URL", settings.DATABASE_URL)
+config.set_main_option('sqlalchemy.url', url)
 
 # target_metadata para operaciones de 'autogenerate'
 # SQLModel.metadata contiene la metadata de todas tus tablas definidas con SQLModel

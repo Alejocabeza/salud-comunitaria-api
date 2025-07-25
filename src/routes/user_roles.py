@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import require_role
-from ..models.user import User, Role, UserRoleLink
+from ..models.user import User
+from ..models.role import Role
+from ..models.user_role import UserRole
 
 router = APIRouter(
     prefix="/user_roles",
@@ -16,20 +18,20 @@ def assign_role_to_user(user_id: int, role_id: int, session: Session = Depends(g
     role = session.get(Role, role_id)
     if not user or not role:
         raise HTTPException(status_code=404, detail="User or Role not found")
-    link = session.exec(select(UserRoleLink).where(
-        (UserRoleLink.user_id == user_id) & (UserRoleLink.role_id == role_id)
+    link = session.exec(select(UserRole).where(
+        (UserRole.user_id == user_id) & (UserRole.role_id == role_id)
     )).first()
     if link:
         raise HTTPException(status_code=400, detail="Role already assigned to user")
-    new_link = UserRoleLink(user_id=user_id, role_id=role_id)
+    new_link = UserRole(user_id=user_id, role_id=role_id)
     session.add(new_link)
     session.commit()
     return {"msg": f"Role '{role.name}' assigned to user '{user.username}'"}
 
 @router.post("/remove")
 def remove_role_from_user(user_id: int, role_id: int, session: Session = Depends(get_session), current_user=Depends(require_role("admin"))):
-    link = session.exec(select(UserRoleLink).where(
-        (UserRoleLink.user_id == user_id) & (UserRoleLink.role_id == role_id)
+    link = session.exec(select(UserRole).where(
+        (UserRole.user_id == user_id) & (UserRole.role_id == role_id)
     )).first()
     if not link:
         raise HTTPException(status_code=404, detail="Role not assigned to user")

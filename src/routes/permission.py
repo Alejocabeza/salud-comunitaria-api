@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import require_role
-from ..models.user import Permission
+from ..models.permission import Permission
 from ..schemas.permission import PermissionCreate, PermissionRead
 
 router = APIRouter(

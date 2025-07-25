@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import require_role
 from ..core.security import decode_access_token
-from ..models.user import Role
+from ..models.role import Role
 from ..schemas.user import RoleRead, RoleCreate
 
 router = APIRouter(
