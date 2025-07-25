@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from sqlmodel import Session
-from src.core.database import engine
+from src.core.database import get_engine
 from src.models.role import Role
 from src.models.user_role import UserRole
 from passlib.context import CryptContext
@@ -41,7 +41,7 @@ def create_auth_roles(db: Session):
 
 def seed_data():
     print("Starting to seed auth-role data...")
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         create_auth_roles(session)
     print("Auth-role data seeding finished.")
 

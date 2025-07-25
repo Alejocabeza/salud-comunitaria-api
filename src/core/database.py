@@ -1,12 +1,16 @@
 from sqlmodel import create_engine, SQLModel, Session
 from .settings import settings
 
-_engine = None
+_engine = None  # Cambia a None para inicializar correctamente
+
+def init_engine():
+    global _engine
+    if _engine is None or isinstance(_engine, str):
+        _engine = create_engine(settings.DATABASE_URL, echo=True)
 
 def get_engine():
     global _engine
-    if _engine is None:
-        _engine = create_engine(settings.DATABASE_URL, echo=True)
+    init_engine()
     return _engine
 
 def set_engine(new_engine):

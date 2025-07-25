@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(1, project_root)
 
 from sqlmodel import Session
-from src.core.database import engine
+from src.core.database import get_engine
 from src.models.role import Role
 from src.models.role_permission import RolePermission
 from src.models.permission import Permission
@@ -51,7 +51,7 @@ def create_role_permissions(db: Session):
 
 def seed_data():
     print("Starting to seed role-permission data...")
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         create_role_permissions(session)
     print("Role-permission data seeding finished.")
 

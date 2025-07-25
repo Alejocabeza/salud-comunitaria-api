@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from sqlmodel import Session
-from src.core.database import engine
+from src.core.database import get_engine
 from src.models.user import User
 from passlib.context import CryptContext
 
@@ -34,7 +34,7 @@ def create_admin_user(db: Session):
 
 def seed_data():
     print("Starting to seed data...")
-    with Session(engine) as session:
+    with Session(get_engine()) as session:
         create_admin_user(session)
     print("Data seeding finished.")
 
