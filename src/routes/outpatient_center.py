@@ -96,7 +96,7 @@ def update_outpatient_center(
     centro = session.get(OutpatientCenter, centro_id)
     if not centro:
         raise HTTPException(status_code=404, detail="Centro ambulatorio no encontrado")
-    for key, value in centro_update.dict(exclude_unset=True).items():
+    for key, value in centro_update.model_dump(exclude_unset=True).items():
         setattr(centro, key, value)
     session.add(centro)
     session.commit()

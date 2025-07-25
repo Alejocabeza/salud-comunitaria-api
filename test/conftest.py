@@ -35,11 +35,18 @@ def engine_fixture():
 
     os.environ["DATABASE_URL"] = test_database_url
 
-    # Run Alembic migrations
-    alembic_cfg = Config("alembic.ini")
-    alembic_cfg.set_main_option("script_location", "migrations")
-    alembic_cfg.set_main_option("sqlalchemy.url", test_database_url)
-    command.upgrade(alembic_cfg, "head")
+    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".db")
+    test_database_url = f"sqlite:///{tmp_file.name}"
+    tmp_file.close()
+
+    os.environ["DATABASE_URL"] = test_database_url
+
+    temp_engine = create_engine(
+        test_database_url,
+        connect_args={"check_same_thread": False}
+    )
+    # Create tables directly for testing
+    SQLModel.metadata.create_all(temp_engine)
 
     temp_engine = create_engine(
         test_database_url,

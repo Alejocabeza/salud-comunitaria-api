@@ -58,7 +58,7 @@ def update_medical_resource(
     resource = session.get(MedicalResource, resource_id)
     if not resource:
         raise HTTPException(status_code=404, detail="Recurso médico no encontrado")
-    for key, value in resource_update.dict(exclude_unset=True).items():
+    for key, value in resource_update.model_dump(exclude_unset=True).items():
         setattr(resource, key, value)
     session.add(resource)
     session.commit()

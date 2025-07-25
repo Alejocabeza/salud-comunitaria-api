@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict, ConfigDict
 from typing import Optional
 
 class DoctorUserCreate(BaseModel):
@@ -12,6 +12,7 @@ class DoctorCreate(BaseModel):
     phone: Optional[str] = None
     email: Optional[EmailStr] = None
     outpatient_center_id: int
+    user: DoctorUserCreate
 
 class DoctorUserRead(BaseModel):
     id: int
@@ -42,8 +43,7 @@ class DoctorReadResource(BaseModel):
     phone: Optional[str] = None
     email: Optional[EmailStr] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class DoctorUpdate(BaseModel):
     name: Optional[str] = None
@@ -51,5 +51,4 @@ class DoctorUpdate(BaseModel):
     phone: Optional[str] = None
     email: Optional[EmailStr] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

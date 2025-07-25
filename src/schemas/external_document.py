@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -19,5 +19,4 @@ class ExternalDocumentRead(BaseModel):
     outpatient_center_id: int
     uploaded_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

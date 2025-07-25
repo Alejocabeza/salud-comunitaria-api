@@ -22,7 +22,7 @@ router = APIRouter(
 def create_patient(
     patient: PatientCreate,
     session: Session = Depends(get_session),
-    current_user=Depends(require_role("outpatien_center"))
+    current_user=Depends(require_role("outpatient_center"))
 ):
     role = session.exec(select(Role).where(Role.name == "patient")).first()
     if not role:
@@ -49,7 +49,7 @@ def create_patient(
     session.refresh(user)
 
     user_role = UserRole(user_id=user.id, role_id=role.id)
-    session.add(user_role_link)
+    session.add(user_role)
     session.commit()
 
     db_patient = Patient(
@@ -76,7 +76,13 @@ def list_patients(
     current_user=Depends(require_role("outpatient_center"))
 ):
     patients = session.exec(select(Patient)).all()
-    return patients
+    return [
+        PatientRead(
+            **patient.model_dump(),
+            user=PatientUserRead.model_validate(session.get(User, patient.user_id), from_attributes=True)
+        )
+        for patient in patients
+    ]
 
 # READ ONE
 @router.get("/{patient_id}", response_model=PatientReadResource)
@@ -88,10 +94,14 @@ def get_patient(
     patient = session.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return PatientReadResource(**patient.dict()) 
+    user = session.get(User, patient.user_id)
+    return PatientRead(
+        **patient.dict(),
+        user=PatientUserRead.model_validate(user, from_attributes=True)
+    )
 
 # UPDATE
-@router.patch("/{patient_id}", response_model=PatientReadResource)
+@router.patch("/{patient_id}", response_model=PatientRead)
 def update_patient(
     patient_id: int,
     patient_update: PatientUpdate,
@@ -101,13 +111,16 @@ def update_patient(
     patient = session.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    for key, value in patient_update.dict(exclude_unset=True).items():
+    for key, value in patient_update.model_dump(exclude_unset=True).items():
         setattr(patient, key, value)
     session.add(patient)
     session.commit()
     session.refresh(patient)
     user = session.get(User, patient.user_id)
-    return PatientReadResource(**patient.dict())
+    return PatientRead(
+        **patient.model_dump(),
+        user=PatientUserRead.model_validate(user, from_attributes=True)
+    )
 
 # DELETE
 @router.delete("/{patient_id}")

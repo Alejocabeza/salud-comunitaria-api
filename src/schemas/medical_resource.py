@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, ConfigDict
 from typing import Optional
 
 class MedicalResourceCreate(BaseModel):
@@ -15,8 +15,7 @@ class MedicalResourceRead(BaseModel):
     quantity: int
     unit: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MedicalResourceUpdate(BaseModel):
     name: Optional[str] = None

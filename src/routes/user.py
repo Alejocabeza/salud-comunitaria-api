@@ -11,7 +11,6 @@ router = APIRouter(
     prefix="/users",
     tags=["Usuarios"],
     responses={404: {"description": "Not found"}},
-    dependencies=[Depends(decode_access_token)]
 )
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

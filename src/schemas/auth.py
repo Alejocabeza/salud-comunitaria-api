@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict, ConfigDict
 
 class Token(BaseModel):
     access_token: str

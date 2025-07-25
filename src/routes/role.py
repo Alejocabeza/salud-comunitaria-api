@@ -10,7 +10,6 @@ router = APIRouter(
     prefix="/roles",
     tags=["Roles"],
     responses={404: {"description": "Not found"}},
-    dependencies=[Depends(decode_access_token)]
 )
 
 @router.post("/", response_model=RoleRead)

@@ -1,17 +1,17 @@
 # main.py
 from fastapi import FastAPI
 from .routes import (
-    user, 
-    auth, 
-    role, 
-    user_roles, 
-    permission, 
-    role_permissions, 
-    outpatient_center, 
-    doctor, 
-    patient, 
-    medical_resource, 
-    medication_request, 
+    user,
+    auth,
+    role,
+    user_roles,
+    permission,
+    role_permissions,
+    outpatient_center,
+    doctor,
+    patient,
+    medical_resource,
+    medication_request,
     external_document
 )
 from .core.settings import settings

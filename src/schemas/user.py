@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict, ConfigDict
 from typing import List, Optional
 
 class UserCreate(BaseModel):
@@ -13,8 +13,7 @@ class UserRead(BaseModel):
     is_active: bool
     roles: List[str] = []
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class RoleCreate(BaseModel):
     name: str
@@ -28,5 +27,4 @@ class RoleRead(BaseModel):
     name: str
     description: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

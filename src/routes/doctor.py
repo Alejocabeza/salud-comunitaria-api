@@ -65,12 +65,12 @@ def create_doctor(
     session.refresh(db_doctor)
 
     return DoctorRead(
-        **db_doctor.dict(),
+        **db_doctor.model_dump(),
         user=DoctorUserRead.model_validate(user, from_attributes=True)
     )
 
 # READ ALL
-@router.get("/", response_model=list[DoctorReadResource])
+@router.get("/", response_model=list[DoctorRead])
 def list_doctors(
     session: Session = Depends(get_session),
     current_user=Depends(require_role("outpatient_center"))
@@ -81,14 +81,14 @@ def list_doctors(
         user = session.get(User, doctor.user_id)
         result.append(
             DoctorRead(
-                **doctor.dict(),
+                **doctor.model_dump(),
                 user=DoctorUserRead.model_validate(user, from_attributes=True)
             )
         )
     return result
 
 # READ ONE
-@router.get("/{doctor_id}", response_model=DoctorReadResource)
+@router.get("/{doctor_id}", response_model=DoctorRead)
 def get_doctor(
     doctor_id: int,
     session: Session = Depends(get_session),
@@ -99,12 +99,12 @@ def get_doctor(
         raise HTTPException(status_code=404, detail="Doctor no encontrado")
     user = session.get(User, doctor.user_id)
     return DoctorRead(
-        **doctor.dict(),
+        **doctor.model_dump(),
         user=DoctorUserRead.model_validate(user, from_attributes=True)
     )
 
 # UPDATE
-@router.patch("/{doctor_id}", response_model=DoctorReadResource)
+@router.patch("/{doctor_id}", response_model=DoctorRead)
 def update_doctor(
     doctor_id: int,
     doctor_update: DoctorUpdate,
@@ -114,14 +114,14 @@ def update_doctor(
     doctor = session.get(Doctor, doctor_id)
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor no encontrado")
-    for key, value in doctor_update.dict(exclude_unset=True).items():
+    for key, value in doctor_update.model_dump(exclude_unset=True).items():
         setattr(doctor, key, value)
     session.add(doctor)
     session.commit()
     session.refresh(doctor)
     user = session.get(User, doctor.user_id)
     return DoctorRead(
-        **doctor.dict(),
+        **doctor.model_dump(),
         user=DoctorUserRead.model_validate(user, from_attributes=True)
     )
 

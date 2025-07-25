@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import get_current_user, require_role
+from ..models.outpatient_center import OutpatientCenter
+from ..models.outpatient_center import OutpatientCenter
+from ..models.outpatient_center import OutpatientCenter
 from ..models.medication_request import MedicationRequest
 from ..schemas.medication_request import (
     MedicationRequestCreate, MedicationRequestRead, MedicationRequestUpdate
@@ -50,8 +53,11 @@ def list_medication_requests(
     # El ambulatorio ve todas, el doctor/paciente solo las suyas
     user_roles = {role.name for role in current_user.roles}
     if "outpatient_center" in user_roles:
+        outpatient_center = session.exec(select(OutpatientCenter).where(OutpatientCenter.user_id == current_user.id)).first()
+        if not outpatient_center:
+            raise HTTPException(status_code=404, detail="Centro ambulatorio no encontrado para el usuario actual")
         requests = session.exec(select(MedicationRequest).where(
-            MedicationRequest.outpatient_center_id == current_user.outpatient_center.id
+            MedicationRequest.outpatient_center_id == outpatient_center.id
         )).all()
     else:
         requests = session.exec(select(MedicationRequest).where(
@@ -71,7 +77,8 @@ def get_medication_request(
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
     user_roles = {role.name for role in current_user.roles}
     if "outpatient_center" in user_roles:
-        if req.outpatient_center_id != current_user.outpatient_center.id:
+        outpatient_center = session.exec(select(OutpatientCenter).where(OutpatientCenter.user_id == current_user.id)).first()
+        if not outpatient_center or req.outpatient_center_id != outpatient_center.id:
             raise HTTPException(status_code=403, detail="No tienes acceso a esta solicitud")
     elif req.requested_by_user_id != current_user.id:
         raise HTTPException(status_code=403, detail="No tienes acceso a esta solicitud")
@@ -88,7 +95,7 @@ def update_medication_request(
     req = session.get(MedicationRequest, request_id)
     if not req:
         raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-    for key, value in update.dict(exclude_unset=True).items():
+    for key, value in update.model_dump(exclude_unset=True).items():
         setattr(req, key, value)
     req.updated_at = datetime.utcnow()
     session.add(req)
