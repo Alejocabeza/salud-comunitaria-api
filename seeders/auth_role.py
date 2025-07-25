@@ -8,7 +8,8 @@ sys.path.insert(0, project_root)
 
 from sqlmodel import Session
 from src.core.database import engine
-from src.models.user import Role, UserRoleLink as UserRole
+from src.models.role import Role
+from src.models.user_role import UserRole
 from passlib.context import CryptContext
 
 def create_auth_roles(db: Session):

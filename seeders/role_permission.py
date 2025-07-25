@@ -8,7 +8,9 @@ sys.path.insert(1, project_root)
 
 from sqlmodel import Session
 from src.core.database import engine
-from src.models.user import RolePermissionLink as RolePermission, Permission, Role
+from src.models.role import Role
+from src.models.role_permission import RolePermission
+from src.models.permission import Permission
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

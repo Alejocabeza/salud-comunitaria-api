@@ -8,7 +8,7 @@ sys.path.insert(0, project_root)
 
 from sqlmodel import Session
 from src.core.database import engine
-from src.models.user import Permission
+from src.models.permission import Permission
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
