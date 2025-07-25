@@ -18,8 +18,13 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_role_permissions(db: Session):
     role_permissions_data = {
         "admin": ["admin"],
-        "outpatient_center": ["outpatient_center.store", "outpatient_center.update", "outpatient_center.delete", "outpatient_center.read", 'doctor.store', 'doctor.delete', 'doctor.read', 'patient.read', 'resource.store', 'resource.update', 'resource.delete', 'resource.read'],
-        "doctor": ["doctor.store", "doctor.update", "doctor.delete", "doctor.read"],
+        "outpatient_center": [
+            'doctor.all',
+            'patient.read',
+        ],
+        "doctor": [
+        ],
+        'patient': []
     }
 
     for role_name, permissions in role_permissions_data.items():
