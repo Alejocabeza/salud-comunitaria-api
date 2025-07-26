@@ -3,12 +3,13 @@ from sqlmodel import Session, select
 from ..core.database import get_session
 from ..core.dependencies import get_current_user, require_role
 from ..models.outpatient_center import OutpatientCenter
-from ..models.outpatient_center import OutpatientCenter
-from ..models.outpatient_center import OutpatientCenter
 from ..models.medication_request import MedicationRequest
+from ..models.doctor import Doctor
+from ..models.patient import Patient
 from ..schemas.medication_request import (
     MedicationRequestCreate, MedicationRequestRead, MedicationRequestUpdate
 )
+from src.templates.notifications.medication_request import medication_request
 from datetime import datetime
 
 router = APIRouter(
@@ -19,7 +20,7 @@ router = APIRouter(
 
 # CREATE
 @router.post("/", response_model=MedicationRequestRead)
-def create_medication_request(
+async def create_medication_request(
     request: MedicationRequestCreate,
     session: Session = Depends(get_session),
     current_user=Depends(get_current_user)
@@ -42,6 +43,54 @@ def create_medication_request(
     session.add(db_request)
     session.commit()
     session.refresh(db_request)
+
+    # Obtener información del centro ambulatorio
+    outpatient_center = session.get(OutpatientCenter, request.outpatient_center_id)
+    if not outpatient_center:
+        print(f"Error: Centro ambulatorio con ID {request.outpatient_center_id} no encontrado")
+        return db_request
+
+    if not outpatient_center.email:
+        print(f"Advertencia: Centro ambulatorio '{outpatient_center.name}' no tiene email configurado")
+        return db_request
+
+    # Determinar el tipo de solicitante y obtener su nombre
+    requester_name = current_user.username
+    requester_type = "Usuario"
+
+    if "doctor" in user_roles:
+        doctor = session.exec(select(Doctor).where(Doctor.user_id == current_user.id)).first()
+        if doctor:
+            requester_name = doctor.name
+            requester_type = "Doctor"
+    elif "patient" in user_roles:
+        patient = session.exec(select(Patient).where(Patient.user_id == current_user.id)).first()
+        if patient:
+            requester_name = patient.name
+            requester_type = "Paciente"
+
+    # Enviar notificación por correo al centro ambulatorio
+    try:
+        print(f"Intentando enviar correo a: {outpatient_center.email}")
+        print(f"Solicitante: {requester_name} ({requester_type})")
+        print(f"Medicamento: {request.medication_name}")
+
+        await medication_request(
+            email_to=outpatient_center.email,
+            center_name=outpatient_center.name,
+            requester_name=requester_name,
+            requester_type=requester_type,
+            medication_name=request.medication_name,
+            quantity=request.quantity,
+            reason=request.reason
+        )
+        print("Correo enviado exitosamente")
+    except Exception as e:
+        # Log del error pero no fallar la creación de la solicitud
+        print(f"Error enviando notificación de solicitud de medicamento: {e}")
+        import traceback
+        traceback.print_exc()
+
     return db_request
 
 # READ ALL (solo para el ambulatorio)

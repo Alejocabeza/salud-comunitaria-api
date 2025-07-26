@@ -48,3 +48,8 @@ def verify_reset_password_token(token: str):
 def generate_secure_password(length: int = 8) -> str:
     characters = string.ascii_letters + string.digits
     return ''.join(secrets.choice(characters) for _ in range(length))
+
+def generate_random_password(length=12):
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    password = ''.join(secrets.choice(alphabet) for i in range(length))
+    return password

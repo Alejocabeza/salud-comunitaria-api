@@ -9,7 +9,8 @@ from ..models.user_role import UserRole
 from ..schemas.patient import (
     PatientCreate, PatientRead, PatientUserRead, PatientUpdate, PatientReadResource
 )
-from ..core.security import get_password_hash
+from ..core.security import get_password_hash, generate_random_password
+from src.templates.notifications.welcome import welcome 
 
 router = APIRouter(
     prefix="/patients",
@@ -19,7 +20,7 @@ router = APIRouter(
 
 # CREATE
 @router.post("/", response_model=PatientRead)
-def create_patient(
+async def create_patient(
     patient: PatientCreate,
     session: Session = Depends(get_session),
     current_user=Depends(require_role("outpatient_center"))
@@ -37,7 +38,8 @@ def create_patient(
     if session.exec(select(User).where(User.email == patient.user.email)).first():
         raise HTTPException(status_code=400, detail="El email ya está registrado")
 
-    hashed_password = get_password_hash(patient.user.password)
+    password = generate_random_password()
+    hashed_password = get_password_hash(password)
     user = User(
         username=username,
         email=patient.user.email,
@@ -64,8 +66,14 @@ def create_patient(
     session.commit()
     session.refresh(db_patient)
 
+    await  welcome(
+        email_to=user.email,
+        username=user.username,
+        password=password
+    )
+
     return PatientRead(
-        **db_patient.dict(),
+        **db_patient.model_dump(),
         user=PatientUserRead.model_validate(user, from_attributes=True)
     )
 

@@ -9,7 +9,8 @@ from ..models.user_role import UserRole
 from ..schemas.doctor import (
     DoctorCreate, DoctorRead, DoctorUserRead, DoctorUpdate, DoctorReadResource
 )
-from ..core.security import get_password_hash
+from ..core.security import get_password_hash, generate_random_password
+from src.templates.notifications.welcome import welcome 
 
 router = APIRouter(
     prefix="/doctors",
@@ -19,7 +20,7 @@ router = APIRouter(
 
 # CREATE
 @router.post("/", response_model=DoctorRead)
-def create_doctor(
+async def create_doctor(
     doctor: DoctorCreate,
     session: Session = Depends(get_session),
     current_user=Depends(require_role("outpatient_center"))
@@ -37,7 +38,8 @@ def create_doctor(
     if session.exec(select(User).where(User.email == doctor.user.email)).first():
         raise HTTPException(status_code=400, detail="El email ya está registrado")
 
-    hashed_password = get_password_hash(doctor.user.password)
+    password = generate_random_password()
+    hashed_password = get_password_hash(password)
     user = User(
         username=username,
         email=doctor.user.email,
@@ -63,6 +65,12 @@ def create_doctor(
     session.add(db_doctor)
     session.commit()
     session.refresh(db_doctor)
+
+    await  welcome(
+        email_to=user.email,
+        username=user.username,
+        password=password
+    )
 
     return DoctorRead(
         **db_doctor.model_dump(),
