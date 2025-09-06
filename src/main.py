@@ -12,7 +12,8 @@ from .routes import (
     patient,
     medical_resource,
     medication_request,
-    external_document
+    external_document,
+    reports
 )
 from .core.settings import settings
 from .models.user import User
@@ -46,4 +47,5 @@ app.include_router(patient.router, prefix="/api/v1")
 app.include_router(medical_resource.router, prefix="/api/v1")
 app.include_router(medication_request.router, prefix="/api/v1")
 app.include_router(external_document.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
 
